@@ -29,3 +29,7 @@
     - php-gd
   notify:
   - restart httpd
+  
+- name: Make composer executable
+  file: dest=/usr/local/bin/composer mode=a+x
+  
