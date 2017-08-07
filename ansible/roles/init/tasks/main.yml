@@ -22,3 +22,14 @@
      - vim
      - man
      - unzip
+     
+- name: Allow ssh logins
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication no"
+    line: "PasswordAuthentication yes"
+    state: present 
+    
+- service:
+    name: sshd
+    state: restarted

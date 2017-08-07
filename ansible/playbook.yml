@@ -1,6 +1,6 @@
 # file: ansible/playbook.yml
 ---
- - hosts: all
+ - hosts: 127.0.0.1
 
    roles:
     - init
