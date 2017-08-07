@@ -22,6 +22,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #        vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
     end
 
+	config.vm.provision "shell", inline: <<-SHELL  
+		 rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+		 yum update -y
+		 yum install -y epel-release	
+		 yum install -y git
+		 yum install -y ansible
+	SHELL
+
+	
     config.vm.provision "ansible" do |ansible|
         ansible.playbook = "ansible/playbook.yml"
         ansible.sudo = true
