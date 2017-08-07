@@ -1,0 +1,52 @@
+# file: roles/crowley/tasks/main.yml
+---
+
+- name: Setup git config
+  template: src=gitconfig dest=/home/vagrant/.gitconfig
+  
+- name: Setup screenrc
+  template: src=screenrc dest=/home/vagrant/.screenrc
+
+- name: Add mysql aliases
+  blockinfile:
+    dest: /home/vagrant/.bashrc
+    block: |
+        alias ms='mysql -u datasaver -p`cat ~/dbpwd.txt` --pager="less -ScX" -t'
+        alias msimple='mysql -u datasaver -p`cat ~/dbpwd.txt` '
+    marker: "# -- ansible managed --"
+
+    
+- name: Install personal packages
+  yum: pkg={{ item }} state=installed
+  with_items:
+     - screen
+     - emacs-nox
+     - samba
+     - rsync
+     - gitk
+     
+     
+  # Samba setup ######################################################################################
+  
+- name: add netbios name to smb.conf
+  lineinfile:
+    dest: /etc/samba/smb.conf
+    state: present
+    line: "	netbios name = PHP7"
+    insertafter: "server string.*$"
+  
+- name: create samba user with smbpasswd
+  shell: (echo vagrant; echo vagrant) | smbpasswd -a  -s vagrant
+    
+- service:
+    name: smb   
+    state: started
+    enabled: yes
+  
+- service:
+    name: nmb
+    state: started
+    enabled: yes
+
+     
+    
